@@ -24,6 +24,31 @@
         <maven.war.plugin.version>3.1.0</maven.war.plugin.version>
     </properties>
 
+    <organization>
+        <name>Marcus Hellberg</name>
+        <url>https://github.com/marcushellberg</url>
+    </organization>
+
+    <scm>
+        <url>git://github.com/marcushellberg/shortcut.git</url>
+        <connection>scm:git:git://github.com/marcushellberg/shortcut.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:/marcushellberg/shortcut.git</developerConnection>
+        <tag>Keyboard shortcuts for Vaadin Flow</tag>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/marcushellberg/shortcut/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <repositories>
         <repository>
             <id>Vaadin prereleases</id>
@@ -79,13 +104,17 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${maven.war.plugin.version}</version>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
                 <configuration>
                     <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addClasspath>false</addClasspath>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
                         <manifestEntries>
-                            <Implementation-Title>${project.name}</Implementation-Title>
-                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Vaadin-Package-Version>1</Vaadin-Package-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -94,79 +123,68 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty.version}</version>
+                <version>9.3.7.v20160115</version>
+                <configuration>
+                    <useTestScope>true</useTestScope>
+                </configuration>
             </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>productionMode</id>
-            <activation>
-                <property>
-                    <name>vaadin.productionMode</name>
-                </property>
-            </activation>
-
-            <properties>
-                <transpilation.output>${project.build.directory}/build</transpilation.output>
-            </properties>
-
-            <dependencies>
-                <dependency>
-                    <groupId>com.vaadin</groupId>
-                    <artifactId>flow-server-production-mode</artifactId>
-                </dependency>
-            </dependencies>
-
+            <id>directory</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.vaadin</groupId>
-                        <artifactId>flow-maven-plugin</artifactId>
-                        <version>${flow.maven.plugin.version}</version>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.6</version>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
                         <executions>
                             <execution>
                                 <goals>
-                                    <goal>copy-production-files</goal>
-                                    <goal>package-for-production</goal>
+                                    <goal>single</goal>
                                 </goals>
-                                <configuration>
-                                    <transpileOutputDirectory>${transpilation.output}</transpileOutputDirectory>
-                                </configuration>
+                                <phase>install</phase>
                             </execution>
                         </executions>
                     </plugin>
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${maven.war.plugin.version}</version>
-                        <configuration>
-                            <archive>
-                                <manifestEntries>
-                                    <Implementation-Title>${project.name}</Implementation-Title>
-                                    <Implementation-Version>${project.version}</Implementation-Version>
-                                </manifestEntries>
-                            </archive>
-                            <webResources>
-                                <resource>
-                                    <directory>${transpilation.output}</directory>
-                                </resource>
-                            </webResources>
-                        </configuration>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
-
                     <plugin>
-                        <groupId>org.eclipse.jetty</groupId>
-                        <artifactId>jetty-maven-plugin</artifactId>
-                        <version>${jetty.version}</version>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                         <configuration>
-                            <webAppConfig>
-                                <resourceBases>
-                                    <resourceBase>${transpilation.output}</resourceBase>
-                                </resourceBases>
-                            </webAppConfig>
+                            <quiet>true</quiet>
+                            <additionalparam>-Xdoclint:none</additionalparam>
                         </configuration>
                     </plugin>
                 </plugins>
