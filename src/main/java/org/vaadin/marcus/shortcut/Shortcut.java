@@ -30,11 +30,6 @@ public class Shortcut {
         " && " + (modifierFilter.isEmpty() ? "true" : modifierFilter);
 
     return shortcutScope.addEventListener("keydown", event -> listener.handleAction())
-        .addEventData("event.keyCode")
-        .addEventData("event.altKey")
-        .addEventData("event.ctrlKey")
-        .addEventData("event.metaKey")
-        .addEventData("event.shiftKey")
         .setFilter(filter);
   }
 
