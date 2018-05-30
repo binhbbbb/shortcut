@@ -13,7 +13,7 @@ Often all that is needed is mapping a key to an action.
 
 ```java
 var messageField = new TextField();
-Shortcut.add(messageField, Shortcut.KeyCodes.ENTER, sendButton::click);
+Shortcut.add(messageField, Key.ENTER, sendButton::click);
 ```
 
 ## Modifier keys
@@ -22,5 +22,5 @@ You can also add modifier keys to the shortcuts. For example, submit on Shift+En
 
 ```java
 var messageField = new TextField();
-Shortcut.add(messageField, Shortcut.KeyCodes.ENTER, sendButton::click, Shortcut.Modifiers.SHIFT);
+Shortcut.add(messageField, Key.ENTER, sendButton::click, Key.SHIFT);
 ```
