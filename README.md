@@ -1,3 +1,6 @@
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/shortcut)
+[![Stars on Vaadin Directory](https://img.shields.io/vaadin-directory/star/shortcut.svg)](https://vaadin.com/directory/component/shortcut)
+
 # Keyboard shortcut listener for [Vaadin Flow](https://vaadin.com/flow)
 
 A simple helper for making it easier to add keyboard shortcuts to your Vaadin Flow applications.
